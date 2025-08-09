@@ -22,6 +22,7 @@ export async function decrypt(input: string): Promise<any> {
     const { payload } = await jwtVerify(input, key, {
       algorithms: ['HS256'],
     })
+
     return payload
   } catch {
     return null
@@ -37,18 +38,26 @@ export async function loginSession(loginData: LoginTypes.Form) {
       },
       body: JSON.stringify(loginData),
     })
+
     const data = await response.json()
+
     if (data.detail === 'No active account found with the given credentials') {
       return {
         success: false,
         ...data,
       }
     }
-    const { services, ...user } = data.user ?? {}
+
+    const { ...user } = data.user ?? {}
+
     const session = await encrypt({ user })
+
     const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+
     const cookieStore = await cookies()
+
     cookieStore.set('session', session, { httpOnly: true, expires })
+
     return {
       success: true,
       ...data,
@@ -61,33 +70,47 @@ export async function loginSession(loginData: LoginTypes.Form) {
 
 export async function logout() {
   const cookieStore = await cookies()
+
   cookieStore.set('session', '')
 }
 
 export async function getSession() {
   const cookieStore = await cookies()
+
   const session = cookieStore.get('session')?.value
-  if (!session) return null
+
+  if (!session) {
+    return null
+  }
+
   const decryptedSession = await decrypt(session)
+
   return decryptedSession
 }
 
 export async function updateSession(request: NextRequest) {
   const session = request.cookies.get('session')?.value
+
   if (!session) {
     return NextResponse.next()
   }
+
   const parsed = await decrypt(session)
+
   if (!parsed || typeof parsed !== 'object') {
     return NextResponse.next()
   }
+
   parsed.expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+
   const res = NextResponse.next()
+
   res.cookies.set({
     name: 'session',
     value: await encrypt(parsed),
     httpOnly: true,
     expires: parsed.expires,
   })
+
   return res
 }

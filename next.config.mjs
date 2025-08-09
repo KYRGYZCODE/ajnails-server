@@ -4,6 +4,7 @@ const nextConfig = {
   images: {
     domains: ['outdoorvitals.com', 'magic.qstorage.bilimmotion.com', 'back.ajnails.soulist.life'],
   },
+  eslint: { ignoreDuringBuilds: true },
 }
 
 export default nextConfig

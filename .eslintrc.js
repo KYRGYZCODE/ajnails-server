@@ -137,31 +137,17 @@ const imports = {
   'import/order': [
     'error',
     {
-      groups: ['builtin', 'external', 'internal', 'parent', 'index', 'sibling', 'object', 'type'],
-
-      'newlines-between': 'always',
-
-      pathGroups: [
-        {
-          pattern: 'react**',
-          group: 'external',
-          position: 'before',
-        },
-        {
-          pattern: '@/**',
-          group: 'internal',
-        },
-        {
-          pattern: '@**/**',
-          group: 'external',
-        },
+      groups: [
+        'builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object', 'type'
       ],
-      alphabetize: {
-        order: 'asc',
-        caseInsensitive: true,
-      },
-
-      pathGroupsExcludedImportTypes: ['react'],
+      'newlines-between': 'always',
+      alphabetize: { order: 'asc', caseInsensitive: true },
+      pathGroups: [
+        { pattern: '^next(/.*)?$', group: 'external', position: 'after' },
+        { pattern: '^antd(/.*)?$', group: 'external', position: 'after' },
+        { pattern: '^@/(.*)$', group: 'internal', position: 'after' },
+      ],
+      pathGroupsExcludedImportTypes: ['builtin'],
     },
   ],
 }
@@ -218,10 +204,8 @@ const config = {
   ],
 
   settings: {
-    react: {
-      pragma: 'React',
-      version: 'detect',
-    },
+  react: { pragma: 'React', version: 'detect' },
+  'import/resolver': { typescript: {} },
   },
 
   rules: {

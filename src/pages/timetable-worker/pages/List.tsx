@@ -1,9 +1,9 @@
 'use client'
 
 import React, { useEffect } from 'react'
-import { Avatar, Card, Flex, Spin, Timeline } from 'antd'
-import dayjs from 'dayjs'
 import Image from 'next/image'
+import dayjs from 'dayjs'
+import { Avatar, Card, Flex, Spin, Timeline } from 'antd'
 
 import { Breadcrumb } from '@/shared/ui/breadcrumb/breadcrumb'
 
@@ -74,29 +74,29 @@ export const List = () => {
 
           <h2 className={cls.servicesTitle}>Расписание работника</h2>
           <div className={cls.scheduleRow}>
-            {(worker?.schedule || []).map((item, id) => (
-              <div key={id} className={cls.dayColumn}>
+            {(worker?.schedule || []).map((scheduleItem) => (
+              <div key={scheduleItem.weekday} className={cls.dayColumn}>
                 <Card
                   className={cls.dayCard}
                   title={(
                     <div className={cls.dayCardHeader}>
-                      <h3 className={cls.dayName}>{item.weekday_name_russian} |</h3>
-                      <div className={cls.period}>{item.start_time} - {item.end_time}</div>
+                      <h3 className={cls.dayName}>{scheduleItem.weekday_name_russian} |</h3>
+                      <div className={cls.period}>{scheduleItem.start_time} - {scheduleItem.end_time}</div>
                     </div>
                   )}
                 >
                   <Timeline className={cls.leadsTimeline}>
                     {(myLeads || []).map((lead) => (
-                      lead.weekday === item.weekday ? (
+                      lead.weekday === scheduleItem.weekday ? (
                         <Timeline.Item key={lead.id}>
                           <Flex vertical gap={8}>
                             <div>Время: {new Date(lead.date_time).toLocaleString()}</div>
                             <div>Клиент: {lead.client_name}</div>
                             <div>Номер телефона: {lead.client.phone}</div>
-                            {(lead.services || []).map((item, index) => (
-                              <React.Fragment key={index}>
-                                <div>{index + 1}. Услуга: {item.name}</div>
-                                <div>{index + 1}. Цена: {item.price} сом</div>
+                            {(lead.services || []).map((srv) => (
+                              <React.Fragment key={srv.id}>
+                                <div>Услуга: {srv.name}</div>
+                                <div>Цена: {srv.price} сом</div>
                               </React.Fragment>
                             ))}
                             <div>Время: {dayjs(lead.date_time).format('DD.MM.YYYY HH:mm')}</div>
