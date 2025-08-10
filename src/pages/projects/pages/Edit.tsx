@@ -34,6 +34,25 @@ export const Edit: React.FC<Props> = (props) => {
     ServiceIDGET(Number(props.service_id))
   }, [props.service_id, ServiceIDGET])
 
+  React.useEffect(() => {
+    if (!items) return
+
+    form.setFieldsValue({
+      ...items,
+      parent_service: items?.parent_service?.id ?? undefined,
+      is_additional: !!items?.is_additional,
+      image: items?.image
+        ? [
+            {
+              uid: '-1',
+              name: 'current_image',
+              url: items.image,
+            },
+          ]
+        : [],
+    })
+  }, [items, form])
+
   return (
     <div className="main">
       <Flex className={cls.header}>
@@ -50,18 +69,7 @@ export const Edit: React.FC<Props> = (props) => {
             form={form}
             className={cls.Form}
             initialValues={{
-              ...items,
-              parent_service: items?.parent_service === null ? '' : items?.parent_service.name,
               is_additional: items?.is_additional,
-              image: items?.image
-                ? [
-                  {
-                    uid: '-1',
-                    name: 'current_image',
-                    url: items.image,
-                  },
-                ]
-                : [],
             }}
             onFinish={(data) => EditService(props.service_id, data)}
           >
